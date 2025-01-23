@@ -30,7 +30,7 @@ env.bak/
 venv.bak/
 
 # Training artifacts
-checkpoints/
+# checkpoints/
 runs/
 logs/
 *.ckpt
@@ -38,7 +38,7 @@ logs/
 *.pth
 wandb/
 lightning_logs/
-final_model/
+# final_model/
 
 # IDE
 .idea/

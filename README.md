@@ -15,6 +15,8 @@ tokenizer = AutoTokenizer.from_pretrained("HuggingFaceTB/cosmo2-tokenizer")
 ```
 use config from https://huggingface.co/HuggingFaceTB/SmolLM2-135M/blob/main/config_smollm2_135M.yaml
 
+https://github.com/huggingface/smollm/blob/main/pre-training/smollm2/config_smollm2_135M.yaml
+
 create model from above parameters
 
 Use it for training using pytorch lightning 
