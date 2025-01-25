@@ -125,7 +125,7 @@ class SmolLMModule(LightningModule):
 # Main Script
 if __name__ == "__main__":
     # Load config
-    with open("/kaggle/input/yaml-file/config_smollm2_135.yaml", "r") as file:
+    with open("config_smollm2_135.yaml", "r") as file:
         config = yaml.safe_load(file)
 
     # Load tokenizer
@@ -193,7 +193,7 @@ if __name__ == "__main__":
     # Create trainer
     trainer = Trainer(
         logger=logger,
-        strategy="ddp_notebook",
+        strategy="ddp",
         accelerator="gpu",
         devices=2,
         precision="16-mixed",

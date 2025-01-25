@@ -11,7 +11,10 @@ pinned: false
 ---
 
 ---
-
+<!-- training logs -->
+training restarting from step 5000 
+![Training Log](training_log_smollm2.png) 
+<!-- add image to README.md -->
 <!-- use venv to create a virtual environment -->
 ```
 uv venv 
