@@ -10,12 +10,15 @@ from pytorch_lightning.callbacks import (
     LearningRateMonitor,
     RichProgressBar,
 )
+
 from pytorch_lightning.loggers import TensorBoardLogger
 from torch.nn.utils.rnn import pad_sequence
 from lightning.pytorch.callbacks.progress.rich_progress import RichProgressBarTheme
+from pytorch_lightning.callbacks import TQDMProgressBar
 
 # Set environment variable for memory management
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
+
 
 
 # Function to log GPU memory usage
@@ -99,9 +102,9 @@ class SmolLMModule(LightningModule):
             "train_loss", loss, prog_bar=True, on_step=True, on_epoch=True
         )  # Log loss
 
-        # Log memory usage
-        if batch_idx % 10 == 0:
-            log_memory_usage(batch_idx)
+        # # Log memory usage
+        # if batch_idx % 10 == 0:
+        #     log_memory_usage(batch_idx)
 
         # Release intermediate tensors
         del outputs
@@ -162,39 +165,41 @@ if __name__ == "__main__":
         mode="min",  # Lower loss is better
         save_top_k=3,  # Save the best 3 models
         save_last=True,  # Additionally save the last model
-        every_n_train_steps=500,  # Save every 500 steps
+        every_n_train_steps=5000,  # Save every 500 steps
         save_weights_only=False,  # Save the full model state
         auto_insert_metric_name=False,  # Don't insert metric name in filename
     )
 
     # Progress bar
-    progress_bar = RichProgressBar(
-        refresh_rate=1,
-        leave=False,
-        theme=RichProgressBarTheme(
-            description="",
-            progress_bar="#6206E0",
-            progress_bar_finished="#6206E0",
-            progress_bar_pulse="#6206E0",
-            batch_progress="",
-            time="dim",
-            processing_speed="dim underline",
-            metrics="italic",
-            metrics_text_delimiter=" ",
-            metrics_format=".3f",
-        ),
-        console_kwargs=None,
-    )
+    # progress_bar = RichProgressBar(
+    #     refresh_rate=1,
+    #     leave=False,
+    #     theme=RichProgressBarTheme(
+    #         description="",
+    #         progress_bar="#6206E0",
+    #         progress_bar_finished="#6206E0",
+    #         progress_bar_pulse="#6206E0",
+    #         batch_progress="",
+    #         time="dim",
+    #         processing_speed="dim underline",
+    #         metrics="italic",
+    #         metrics_text_delimiter=" ",
+    #         metrics_format=".3f",
+    #     ),
+    #     console_kwargs=None,
+    # )
+    progress_bar = TQDMProgressBar(refresh_rate=10)
 
     # Create trainer
     trainer = Trainer(
         logger=logger,
-        strategy="ddp",
+        strategy="ddp_notebook",
         accelerator="gpu",
         devices=2,
         precision="16-mixed",
-        max_steps=5000,
+        max_steps=500000,
         accumulate_grad_batches=1,
+        enable_checkpointing = True,
         callbacks=[
             LearningRateMonitor(logging_interval="step"),
             progress_bar,
@@ -215,10 +220,14 @@ if __name__ == "__main__":
 
     # Train with automatic checkpoint resumption
     trainer.fit(model, train_loader, ckpt_path=resume_from_checkpoint)
+    optimizers = trainer.optimizers
+    if optimizers:
+        optimizer = optimizers[0]
+        print("optimizer state:",optimizer.state_dict())
 
     # After training, print the best model path and score
     print(f"Best model path: {checkpoint_callback.best_model_path}")
-    print(f"Best train loss: {checkpoint_callback.best_model_score:.4f}")
+    # print(f"Best train loss: {checkpoint_callback.best_model_score:.4f}")
 
     # Save final model
     if trainer.is_global_zero:
