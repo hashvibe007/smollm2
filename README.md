@@ -1,3 +1,14 @@
+---
+title: My Smollm2 Model
+emoji: 🚀
+colorFrom: purple
+colorTo: pink
+sdk: streamlit
+sdk_version: "1.20.0"
+app_file: app.py
+pinned: false
+---
+
 <!-- use venv to create a virtual environment -->
 ```
 uv venv 
