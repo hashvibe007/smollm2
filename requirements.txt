@@ -3,6 +3,6 @@ pandas
 gradio
 torch
 transformers
-yaml
+PyYAML
 datasets
 lightning

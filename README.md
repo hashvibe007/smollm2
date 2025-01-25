@@ -1,12 +1,15 @@
 ---
-title: My Smollm2 Model
+---
+title: SmolLM2-135M
 emoji: 🚀
 colorFrom: purple
 colorTo: pink
-sdk: streamlit
+sdk: gradio
 sdk_version: "1.20.0"
 app_file: app.py
 pinned: false
+---
+
 ---
 
 <!-- use venv to create a virtual environment -->
