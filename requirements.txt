@@ -1,0 +1,8 @@
+numpy
+pandas
+gradio
+torch
+transformers
+PyYAML
+datasets
+lightning
